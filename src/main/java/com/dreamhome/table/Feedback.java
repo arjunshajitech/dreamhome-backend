@@ -16,6 +16,7 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private UUID engineerId;
+    private UUID projectId;
     private String content;
     @Enumerated(EnumType.STRING)
     private Raiting raiting;
