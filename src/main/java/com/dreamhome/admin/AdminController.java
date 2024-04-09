@@ -6,11 +6,15 @@ import com.dreamhome.config.CookieHelper;
 import com.dreamhome.config.PasswordEncoder;
 import com.dreamhome.exception.CustomBadRequestException;
 import com.dreamhome.exception.CustomUnauthorizedException;
+import com.dreamhome.repository.ProjectRepository;
 import com.dreamhome.repository.UserRepository;
 import com.dreamhome.request.ApproveReject;
+import com.dreamhome.request.Assign;
 import com.dreamhome.request.Login;
 import com.dreamhome.request.Success;
+import com.dreamhome.table.Project;
 import com.dreamhome.table.Users;
+import com.dreamhome.table.enumeration.ProjectStatus;
 import com.dreamhome.table.enumeration.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +33,7 @@ public class AdminController {
 
     final UserRepository userRepository;
     final CookieHelper cookieHelper;
+    private final ProjectRepository projectRepository;
 
     @PostMapping("/login")
     public Success login(@RequestBody Login login, HttpServletResponse response) throws CustomBadRequestException {
@@ -78,6 +83,22 @@ public class AdminController {
         engineer.setApproved(approveReject.isApproveOrReject());
         userRepository.save(engineer);
         return new Success("Successfully approved user.");
+    }
+
+    @PostMapping("/assign")
+    public Success assignEngineerToProject(@RequestBody Assign assign,HttpServletRequest request) throws CustomUnauthorizedException {
+
+        sessionCheck(request);
+        Project project = projectRepository.findOneById(assign.getProjectId());
+        if (project == null) throw new CustomUnauthorizedException("Project not found.");
+
+        Users engineer = userRepository.findByIdAndRole(assign.getEngineer(),Role.ENGINEER);
+        if (engineer == null) throw new CustomUnauthorizedException("Engineer not found.");
+
+        project.setEngineerId(engineer.getId());
+        project.setStatus(ProjectStatus.ASSIGNED);
+        projectRepository.save(project);
+        return new Success("Successfully assigned project.");
     }
 
     private Users sessionCheck(HttpServletRequest request) throws CustomUnauthorizedException {

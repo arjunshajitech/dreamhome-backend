@@ -5,6 +5,7 @@ import com.dreamhome.table.enumeration.Style;
 import com.dreamhome.table.enumeration.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
@@ -12,14 +13,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Data
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private UUID clientId;
     private String name;
     @Enumerated(EnumType.STRING)
     private Type type;
-    private String location;
     @Enumerated(EnumType.STRING)
     private Style architectureStyle;
     private long timeline;
@@ -33,4 +35,14 @@ public class Project {
     private double threeDModelAmount = 0;
     private boolean threeDModelAmountPaid = false;
     private boolean planAmountPaid = false;
+    private boolean planEstimationSubmitted = false;
+    protected  boolean threeDModelEstimationSubmitted = false;
+
+    public Project(String name, Type type, Style architectureStyle, long timeline, String description) {
+        this.name = name;
+        this.type = type;
+        this.architectureStyle = architectureStyle;
+        this.timeline = timeline;
+        this.description = description;
+    }
 }
