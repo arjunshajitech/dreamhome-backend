@@ -12,6 +12,7 @@ import com.dreamhome.request.*;
 import com.dreamhome.table.Project;
 import com.dreamhome.table.ProjectImage;
 import com.dreamhome.table.Users;
+import com.dreamhome.table.enumeration.ApproveReject;
 import com.dreamhome.table.enumeration.ImageType;
 import com.dreamhome.table.enumeration.Role;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class EngineerController {
         if(!isEmailExists || !isPhoneExists) throw new CustomBadRequestException("Email or phone exists.");
 
         userRepository.save(
-                new Users(engineerSignup.getRole(),false,false,engineerSignup.getYearOfExperience(),
+                new Users(engineerSignup.getRole(),false,ApproveReject.PENDING,engineerSignup.getYearOfExperience(),
                         engineerSignup.getJobTitle(),engineerSignup.getPhone(), PasswordEncoder.encodePassword(engineerSignup.getPassword()),
                         engineerSignup.getEmail(),engineerSignup.getName())
         );
@@ -52,7 +53,7 @@ public class EngineerController {
     public Success login(@RequestBody Login login, HttpServletResponse response) throws CustomBadRequestException {
 
         Users user = userRepository.findByEmailAndRole(login.getEmail(), Role.ENGINEER);
-        if (user == null || !user.isApproved()) throw new CustomBadRequestException("Bad Credentials.");
+        if (user == null || user.getStatus() != ApproveReject.APPROVED) throw new CustomBadRequestException("Bad Credentials.");
         if (!PasswordEncoder.isPasswordMatch(login.getPassword(),user.getPassword())) throw new CustomBadRequestException("Bad Credentials.");
 
         cookieHelper.setCookie(response,user,Constants.ENGINEER_COOKIE_NAME);
@@ -163,7 +164,7 @@ public class EngineerController {
     private Users sessionCheck(HttpServletRequest request) throws CustomUnauthorizedException {
         String cookieId = cookieHelper.getCookieValue(request,Constants.ENGINEER_COOKIE_NAME);
         Users users = userRepository.findByCookie(UUID.fromString(cookieId));
-        if (users != null && users.isApproved()) return users;
+        if (users != null && users.getStatus() != ApproveReject.APPROVED) return users;
         else throw new CustomUnauthorizedException("Unauthorized.");
     }
 }

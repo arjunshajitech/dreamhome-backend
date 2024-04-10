@@ -1,5 +1,6 @@
 package com.dreamhome.table;
 
+import com.dreamhome.table.enumeration.ApproveReject;
 import com.dreamhome.table.enumeration.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,17 +25,18 @@ public class Users {
     private UUID cookie;
     private String jobTitle;
     private double yearOfExperience = 0;
-    private boolean approved = false;
+    @Enumerated(EnumType.STRING)
+    private ApproveReject status = ApproveReject.PENDING;
     private boolean active = false;
     @Enumerated(EnumType.STRING)
     private Role role = Role.ADMIN;
 
-    public Users(Role role, boolean active, boolean approved,
+    public Users(Role role, boolean active, ApproveReject status,
                  double yearOfExperience, String jobTitle, String phone,
                  String password, String email, String name) {
         this.role = role;
         this.active = active;
-        this.approved = approved;
+        this.status = status;
         this.yearOfExperience = yearOfExperience;
         this.jobTitle = jobTitle;
         this.phone = phone;

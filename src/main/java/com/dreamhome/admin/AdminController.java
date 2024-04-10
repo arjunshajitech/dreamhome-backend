@@ -66,7 +66,10 @@ public class AdminController {
         if (client == null)
             throw new CustomBadRequestException("User not found.");
 
-        client.setApproved(approveReject.isApproveOrReject());
+        if (approveReject.isApproveOrReject())
+            client.setStatus(com.dreamhome.table.enumeration.ApproveReject.APPROVED);
+        else
+            client.setStatus(com.dreamhome.table.enumeration.ApproveReject.REJECTED);
         userRepository.save(client);
         return new Success("Successfully approved user.");
     }
@@ -80,7 +83,10 @@ public class AdminController {
         if (engineer == null)
             throw new CustomBadRequestException("User not found.");
 
-        engineer.setApproved(approveReject.isApproveOrReject());
+        if (approveReject.isApproveOrReject())
+            engineer.setStatus(com.dreamhome.table.enumeration.ApproveReject.APPROVED);
+        else
+            engineer.setStatus(com.dreamhome.table.enumeration.ApproveReject.REJECTED);
         userRepository.save(engineer);
         return new Success("Successfully approved user.");
     }

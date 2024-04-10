@@ -13,6 +13,7 @@ import com.dreamhome.request.*;
 import com.dreamhome.table.Project;
 import com.dreamhome.table.ProjectImage;
 import com.dreamhome.table.Users;
+import com.dreamhome.table.enumeration.ApproveReject;
 import com.dreamhome.table.enumeration.ImageType;
 import com.dreamhome.table.enumeration.ProjectStatus;
 import com.dreamhome.table.enumeration.Role;
@@ -43,7 +44,7 @@ public class ClientController {
         if(!isEmailExists || !isPhoneExists) throw new CustomBadRequestException("Email or phone exists.");
 
         userRepository.save(
-                new Users(clientSignup.getRole(),false,false,0,
+                new Users(clientSignup.getRole(),false,ApproveReject.PENDING,0,
                         null,clientSignup.getPhone(),PasswordEncoder.encodePassword(clientSignup.getPassword()),
                         clientSignup.getEmail(),clientSignup.getName())
         );
@@ -54,7 +55,7 @@ public class ClientController {
     public Success login(@RequestBody Login login, HttpServletResponse response) throws CustomBadRequestException {
 
         Users user = userRepository.findByEmailAndRole(login.getEmail(), Role.CLIENT);
-        if (user == null || !user.isApproved()) throw new CustomBadRequestException("Bad Credentials.");
+        if (user == null || user.getStatus() != ApproveReject.APPROVED) throw new CustomBadRequestException("Bad Credentials.");
         if (!PasswordEncoder.isPasswordMatch(login.getPassword(),user.getPassword())) throw new CustomBadRequestException("Bad Credentials.");
 
         cookieHelper.setCookie(response,user,Constants.CLIENT_COOKIE_NAME);
@@ -206,7 +207,7 @@ public class ClientController {
     private Users sessionCheck(HttpServletRequest request) throws CustomUnauthorizedException {
         String cookieId = cookieHelper.getCookieValue(request,Constants.CLIENT_COOKIE_NAME);
         Users users = userRepository.findByCookie(UUID.fromString(cookieId));
-        if (users != null && users.isApproved()) return users;
+        if (users != null && users.getStatus() != ApproveReject.APPROVED) return users;
         else throw new CustomUnauthorizedException("Unauthorized.");
     }
 }

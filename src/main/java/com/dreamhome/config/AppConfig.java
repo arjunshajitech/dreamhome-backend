@@ -2,6 +2,7 @@ package com.dreamhome.config;
 
 import com.dreamhome.repository.UserRepository;
 import com.dreamhome.table.Users;
+import com.dreamhome.table.enumeration.ApproveReject;
 import com.dreamhome.table.enumeration.Role;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,12 @@ public class AppConfig {
         String password = "123456";
         List<Users> admins = new ArrayList<>();
         admins.add(new Users(
-                Role.ADMIN,true,true,
+                Role.ADMIN,true, ApproveReject.APPROVED,
                 0,null,"0000000000",
                 PasswordEncoder.encodePassword(password),"admin@admin.com","Admin Admin"
         ));
         admins.add(new Users(
-                Role.ADMIN,true,true,
+                Role.ADMIN,true,ApproveReject.APPROVED,
                 0,null,"1111111111",
                 PasswordEncoder.encodePassword(password),"superadmin@admin.com","Super Admin"
         ));
