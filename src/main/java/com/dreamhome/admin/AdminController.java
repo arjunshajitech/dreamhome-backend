@@ -23,6 +23,7 @@ import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -55,6 +56,14 @@ public class AdminController {
     @GetMapping("/profile")
     public Users getProfile(HttpServletRequest request) throws CustomUnauthorizedException {
         return sessionCheck(request);
+    }
+
+    @GetMapping("/clients")
+    public List<Users> listAllClients(HttpServletRequest request)
+            throws CustomUnauthorizedException {
+
+        sessionCheck(request);
+        return userRepository.findAllByRole(Role.CLIENT);
     }
 
     @PostMapping("/approve/client")

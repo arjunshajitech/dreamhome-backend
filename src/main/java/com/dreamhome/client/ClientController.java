@@ -41,13 +41,13 @@ public class ClientController {
 
         boolean isEmailExists = userRepository.existsByEmailAndRole(clientSignup.getEmail(),Role.CLIENT);
         boolean isPhoneExists = userRepository.existsByPhoneAndRole(clientSignup.getPhone(),Role.CLIENT);
-        if(!isEmailExists || !isPhoneExists) throw new CustomBadRequestException("Email or phone exists.");
+        if(isEmailExists || isPhoneExists) throw new CustomBadRequestException("Email or phone exists.");
 
-        userRepository.save(
-                new Users(clientSignup.getRole(),false,ApproveReject.PENDING,0,
-                        null,clientSignup.getPhone(),PasswordEncoder.encodePassword(clientSignup.getPassword()),
-                        clientSignup.getEmail(),clientSignup.getName())
-        );
+        userRepository.save(new Users(
+                clientSignup.getRole(),false,ApproveReject.PENDING,0,
+                null,clientSignup.getPhone(),PasswordEncoder.encodePassword(clientSignup.getPassword()),
+                clientSignup.getEmail(),clientSignup.getName()
+        ));
         return new Success("Signup successful");
     }
 
