@@ -77,23 +77,8 @@ public class EngineerController {
         return projectRepository.findAllByEngineerId(user.getId());
     }
 
-    @PutMapping("/plan/project")
+    @PutMapping("/project")
     public Success updatePlan(@RequestBody UpdateProject updateProject,HttpServletRequest request)
-            throws CustomUnauthorizedException, CustomBadRequestException {
-
-        Users user = sessionCheck(request);
-        Project project = projectRepository.findByIdAndEngineerId(updateProject.getId(),user.getId());
-        if (project == null) throw new CustomBadRequestException("Project not found.");
-
-        project.setPlanEstimation(updateProject.getPlanEstimation());
-        project.setPlanAmount(updateProject.getPlanAmount());
-        project.setPlanEstimationSubmitted(true);
-        projectRepository.save(project);
-        return new Success("Plan updated successfully.");
-    }
-
-    @PutMapping("/model/project")
-    public Success updateModel(@RequestBody UpdateProject updateProject,HttpServletRequest request)
             throws CustomUnauthorizedException, CustomBadRequestException {
 
         Users user = sessionCheck(request);
@@ -103,9 +88,27 @@ public class EngineerController {
         project.setThreeDModelAmount(updateProject.getThreeDModelAmount());
         project.setThreeDModelEstimation(updateProject.getThreeDModelEstimation());
         project.setThreeDModelEstimationSubmitted(true);
+        project.setPlanEstimation(updateProject.getPlanEstimation());
+        project.setPlanAmount(updateProject.getPlanAmount());
+        project.setPlanEstimationSubmitted(true);
         projectRepository.save(project);
-        return new Success("Model updated successfully.");
+        return new Success("Plan updated successfully.");
     }
+
+//    @PutMapping("/model/project")
+//    public Success updateModel(@RequestBody UpdateProject updateProject,HttpServletRequest request)
+//            throws CustomUnauthorizedException, CustomBadRequestException {
+//
+//        Users user = sessionCheck(request);
+//        Project project = projectRepository.findByIdAndEngineerId(updateProject.getId(),user.getId());
+//        if (project == null) throw new CustomBadRequestException("Project not found.");
+//
+//        project.setThreeDModelAmount(updateProject.getThreeDModelAmount());
+//        project.setThreeDModelEstimation(updateProject.getThreeDModelEstimation());
+//        project.setThreeDModelEstimationSubmitted(true);
+//        projectRepository.save(project);
+//        return new Success("Model updated successfully.");
+//    }
 
     @PostMapping("/upload/plan")
     public Success uploadPlan(@RequestBody UploadImage uploadPlan, HttpServletRequest request)
