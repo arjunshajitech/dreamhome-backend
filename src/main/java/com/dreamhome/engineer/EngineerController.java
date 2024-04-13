@@ -71,7 +71,7 @@ public class EngineerController {
         return sessionCheck(request);
     }
 
-    @GetMapping("/works")
+    @GetMapping("/jobs")
     public List<Project> listAllAssignedWorks(HttpServletRequest request) throws  CustomUnauthorizedException {
         Users user = sessionCheck(request);
         return projectRepository.findAllByEngineerId(user.getId());

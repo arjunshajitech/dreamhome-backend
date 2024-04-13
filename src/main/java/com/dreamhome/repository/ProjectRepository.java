@@ -1,6 +1,7 @@
 package com.dreamhome.repository;
 
 import com.dreamhome.table.Project;
+import com.dreamhome.table.enumeration.ProjectStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface ProjectRepository extends JpaRepository<Project, UUID> {
     List<Project> findAllByEngineerId(UUID id);
 
     Project findByIdAndEngineerId(UUID id, UUID id1);
+
+    List<Project> findAllByStatus(ProjectStatus projectStatus);
 }

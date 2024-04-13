@@ -74,6 +74,13 @@ public class AdminController {
         return userRepository.findAllByRole(Role.ENGINEER);
     }
 
+    @GetMapping("/engineers/approved")
+    public List<Users> listAllApprovedEngineers(HttpServletRequest request)
+            throws CustomUnauthorizedException {
+        sessionCheck(request);
+        return userRepository.findAllByRoleAndStatus(Role.ENGINEER, com.dreamhome.table.enumeration.ApproveReject.APPROVED);
+    }
+
     @PostMapping("/approve/client")
     public Success approveOrRejectClient(@RequestBody ApproveReject approveReject, HttpServletRequest request)
             throws CustomUnauthorizedException, CustomBadRequestException {
@@ -106,6 +113,12 @@ public class AdminController {
             engineer.setStatus(com.dreamhome.table.enumeration.ApproveReject.REJECTED);
         userRepository.save(engineer);
         return new Success("Successfully approved user.");
+    }
+
+    @GetMapping("/jobs")
+    public List<Project> projectList(HttpServletRequest request) throws CustomUnauthorizedException {
+        sessionCheck(request);
+        return projectRepository.findAllByStatus(ProjectStatus.UNASSIGNED);
     }
 
     @PostMapping("/assign")

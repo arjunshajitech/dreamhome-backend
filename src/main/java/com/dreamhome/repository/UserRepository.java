@@ -1,6 +1,7 @@
 package com.dreamhome.repository;
 
 import com.dreamhome.table.Users;
+import com.dreamhome.table.enumeration.ApproveReject;
 import com.dreamhome.table.enumeration.Role;
 import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,6 @@ public interface UserRepository extends JpaRepository<Users, UUID> {
     Users findByIdAndRole(UUID userId, Role role);
 
     List<Users> findAllByRole(Role role);
+
+    List<Users> findAllByRoleAndStatus(Role role, ApproveReject approveReject);
 }
