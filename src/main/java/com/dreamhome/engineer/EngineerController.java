@@ -39,7 +39,7 @@ public class EngineerController {
 
         boolean isEmailExists = userRepository.existsByEmailAndRole(engineerSignup.getEmail(), Role.ENGINEER);
         boolean isPhoneExists = userRepository.existsByPhoneAndRole(engineerSignup.getPhone(),Role.ENGINEER);
-        if(!isEmailExists || !isPhoneExists) throw new CustomBadRequestException("Email or phone exists.");
+        if(isEmailExists || isPhoneExists) throw new CustomBadRequestException("Email or phone exists.");
 
         userRepository.save(
                 new Users(engineerSignup.getRole(),false,ApproveReject.PENDING,engineerSignup.getYearOfExperience(),
@@ -60,7 +60,7 @@ public class EngineerController {
         return new Success("Successfully logged in.");
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public Success logout(HttpServletRequest request, HttpServletResponse response) {
         cookieHelper.deleteCookie(request,response,Constants.ENGINEER_COOKIE_NAME);
         return new Success("Successfully logged out.");
@@ -164,7 +164,7 @@ public class EngineerController {
     private Users sessionCheck(HttpServletRequest request) throws CustomUnauthorizedException {
         String cookieId = cookieHelper.getCookieValue(request,Constants.ENGINEER_COOKIE_NAME);
         Users users = userRepository.findByCookie(UUID.fromString(cookieId));
-        if (users != null && users.getStatus() != ApproveReject.APPROVED) return users;
+        if (users != null && users.getStatus() == ApproveReject.APPROVED) return users;
         else throw new CustomUnauthorizedException("Unauthorized.");
     }
 }

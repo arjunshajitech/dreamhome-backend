@@ -62,7 +62,7 @@ public class ClientController {
         return new Success("Successfully logged in.");
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public Success logout(HttpServletRequest request, HttpServletResponse response) {
         cookieHelper.deleteCookie(request,response,Constants.CLIENT_COOKIE_NAME);
         return new Success("Successfully logged out.");
@@ -83,7 +83,7 @@ public class ClientController {
 
         projectRepository.save(new Project(
                 createProject.getName(),createProject.getType(),createProject.getArchitectureStyle(),
-                createProject.getTimeline(),createProject.getDescription()
+                createProject.getTimeline(),createProject.getDescription(),user.getId()
         ));
         return new Success("Project created.");
     }
@@ -207,7 +207,7 @@ public class ClientController {
     private Users sessionCheck(HttpServletRequest request) throws CustomUnauthorizedException {
         String cookieId = cookieHelper.getCookieValue(request,Constants.CLIENT_COOKIE_NAME);
         Users users = userRepository.findByCookie(UUID.fromString(cookieId));
-        if (users != null && users.getStatus() != ApproveReject.APPROVED) return users;
+        if (users != null && users.getStatus() == ApproveReject.APPROVED) return users;
         else throw new CustomUnauthorizedException("Unauthorized.");
     }
 }

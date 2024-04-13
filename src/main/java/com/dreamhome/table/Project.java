@@ -38,11 +38,12 @@ public class Project {
     private boolean planEstimationSubmitted = false;
     protected  boolean threeDModelEstimationSubmitted = false;
 
-    public Project(String name, Type type, Style architectureStyle, long timeline, String description) {
+    public Project(String name, Type type, Style architectureStyle, long timeline, String description,UUID clientId) {
         this.name = name;
         this.type = type;
         this.architectureStyle = architectureStyle;
         this.timeline = timeline;
         this.description = description;
+        this.clientId = clientId;
     }
 }

@@ -47,7 +47,7 @@ public class AdminController {
         return new Success("Successfully logged in.");
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public Success logout(HttpServletRequest request, HttpServletResponse response) {
         cookieHelper.deleteCookie(request,response,Constants.ADMIN_COOKIE_NAME);
         return new Success("Successfully logged out.");
@@ -64,6 +64,14 @@ public class AdminController {
 
         sessionCheck(request);
         return userRepository.findAllByRole(Role.CLIENT);
+    }
+
+    @GetMapping("/engineers")
+    public List<Users> listAllEngineers(HttpServletRequest request)
+            throws CustomUnauthorizedException {
+
+        sessionCheck(request);
+        return userRepository.findAllByRole(Role.ENGINEER);
     }
 
     @PostMapping("/approve/client")

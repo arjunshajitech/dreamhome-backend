@@ -11,5 +11,5 @@ public class EngineerSignup {
     String phone;
     String jobTitle;
     double yearOfExperience = 0;
-    private Role role = Role.CLIENT;
+    private Role role = Role.ENGINEER;
 }
